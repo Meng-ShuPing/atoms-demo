@@ -11,6 +11,7 @@ declare const __APP_ENV__: AppConfig
 
 /**
  * 应用配置
+ * 开发和生产环境都使用 VITE_API_BASE_URL 环境变量
  */
 const appConfig: AppConfig = (typeof __APP_ENV__ !== 'undefined' ? __APP_ENV__ : {
   API_BASE_URL: 'http://localhost:8000',
