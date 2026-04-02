@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { NTabs, NTabPane, NInput, NButton, NIcon, useMessage } from 'naive-ui'
 import { CopyOutline, DownloadOutline } from '@vicons/ionicons5'
 import { useProjectStore } from '@/stores/project'

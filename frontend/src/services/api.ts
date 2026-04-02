@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { ApiResponse, GenerateRequest, Project } from '@/types'
+import type { ApiResponse, GenerateRequest, GenerateResponseData, Project } from '@/types'
 import { apiConfig } from '@/config'
 
 // API 基础 URL - 从配置读取
@@ -70,7 +70,7 @@ export const projectApi = {
 // 代码生成 API
 export const generateApi = {
   generateCode: (data: GenerateRequest) =>
-    api.post<ApiResponse<{ code: { html: string; css: string; js: string } }>>(
+    api.post<ApiResponse<GenerateResponseData>>(
       '/api/generate',
       data
     ),

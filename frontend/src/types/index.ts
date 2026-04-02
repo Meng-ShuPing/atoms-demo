@@ -23,6 +23,11 @@ export interface GenerateRequest {
   current_code?: { html: string; css: string; js: string } | null
 }
 
+export interface GenerateResponseData {
+  code: { html: string; css: string; js: string }
+  project_id?: number
+}
+
 export interface GenerateResponse {
   html: string
   css: string

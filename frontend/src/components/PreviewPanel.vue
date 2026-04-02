@@ -41,7 +41,7 @@
     <div class="preview-container">
       <div :class="['preview-wrapper', device]">
         <iframe
-          ref="iframeRef"
+          :key="refreshKey"
           :srcdoc="iframeContent"
           sandbox="allow-scripts allow-modals"
           frameborder="0"
@@ -60,7 +60,6 @@ import { useProjectStore } from '@/stores/project'
 const projectStore = useProjectStore()
 
 const device = ref<'desktop' | 'tablet' | 'mobile'>('desktop')
-const iframeRef = ref<HTMLIFrameElement | null>(null)
 const refreshKey = ref(0)
 
 const iframeContent = computed(() => {
