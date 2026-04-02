@@ -14,10 +14,12 @@ class Project(Base):
     css_code = Column(Text, default="")
     js_code = Column(Text, default="")
     user_prompt = Column(Text, default="")
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # 关系
+    owner = relationship("User", back_populates="projects")
     sessions = relationship("Session", back_populates="project", cascade="all, delete-orphan")
 
 

@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     AI_API_KEY: Optional[str] = None
     AI_MODEL: str = "qwen3.5-plus"
 
+    # JWT 配置
+    SECRET_KEY: str = "your-secret-key-change-in-production"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 天
+
     # CORS 配置
     CORS_ORIGINS: list = ["http://localhost:5173", "http://localhost:3000"]
 

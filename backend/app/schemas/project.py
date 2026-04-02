@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, TypeVar, Generic
+from typing import Optional, List, TypeVar, Generic
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
@@ -47,7 +47,7 @@ class GenerateRequest(BaseModel):
     """代码生成请求模型"""
     prompt: str = Field(..., description="用户需求描述")
     project_id: Optional[int] = None
-    conversation_history: Optional[list[ConversationMessage]] = None  # 对话历史
+    conversation_history: Optional[List[ConversationMessage]] = None  # 对话历史
     current_code: Optional[dict] = None  # 当前代码
 
 

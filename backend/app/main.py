@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.api import projects, generate, sessions
+from app.api import projects, generate, sessions, auth
 
 # 创建数据库表
 async def init_db():
@@ -28,6 +28,7 @@ def create_app() -> FastAPI:
     )
 
     # 注册路由
+    app.include_router(auth.router)
     app.include_router(projects.router)
     app.include_router(generate.router)
     app.include_router(sessions.router)

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { ApiResponse, GenerateRequest, GenerateResponseData, Project } from '@/types'
+import type { ApiResponse, GenerateRequest, GenerateResponseData, Project, User } from '@/types'
 import { apiConfig } from '@/config'
 
 // API 基础 URL - 从配置读取
@@ -13,10 +13,14 @@ const api = axios.create({
   },
 })
 
-// 请求拦截器
+// 请求拦截器 - 自动添加 token
 api.interceptors.request.use(
   (config) => {
-    // 可以在这里添加 token 等认证信息
+    // 从 localStorage 获取 token
+    const token = localStorage.getItem('access_token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   },
   (error) => {
@@ -74,4 +78,19 @@ export const generateApi = {
       '/api/generate',
       data
     ),
+}
+
+// 用户认证 API
+export const authApi = {
+  // 用户注册
+  register: (data: { username: string; email: string; password: string }) =>
+    api.post<ApiResponse<{ user: User }>>('/api/auth/register', data),
+
+  // 用户登录
+  login: (data: { username: string; password: string }) =>
+    api.post<ApiResponse<{ access_token: string; token_type: string }>>('/api/auth/login', data),
+
+  // 获取当前用户信息
+  getCurrentUser: () =>
+    api.get<ApiResponse<{ user: User }>>('/api/auth/me'),
 }

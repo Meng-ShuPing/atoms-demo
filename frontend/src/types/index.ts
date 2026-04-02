@@ -9,6 +9,14 @@ export interface Project {
   updated_at: string
 }
 
+export interface User {
+  id: number
+  username: string
+  email: string
+  is_active: boolean
+  created_at: string
+}
+
 export interface Code {
   html: string
   css: string

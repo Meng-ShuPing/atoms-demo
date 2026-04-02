@@ -7,6 +7,21 @@
           <span>Atoms Demo</span>
         </div>
         <div class="header-actions">
+          <template v-if="userStore.isAuthenticated">
+            <span class="user-info">
+              <n-icon :component="PersonOutline" size="20" />
+              {{ userStore.user?.username }}
+            </span>
+            <n-button @click="handleLogout" size="small">
+              退出
+            </n-button>
+          </template>
+          <template v-else>
+            <n-button @click="showAuthModal = true" size="small">
+              登录 / 注册
+            </n-button>
+          </template>
+          <n-divider vertical />
           <n-button @click="createNewProject" type="primary">
             <template #icon>
               <n-icon :component="AddOutline" />
@@ -53,23 +68,34 @@
           </div>
         </n-layout>
       </n-layout>
+
+      <!-- 认证模态框 -->
+      <AuthModal
+        v-if="showAuthModal"
+        v-model="showAuthModal"
+        @success="handleAuthSuccess"
+      />
     </div>
   </n-message-provider>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NLayout, NLayoutHeader, NLayoutSider, NButton, NIcon, NTabs, NTabPane, NMessageProvider } from 'naive-ui'
-import { SparklesOutline, AddOutline, TimeOutline } from '@vicons/ionicons5'
+import { NLayout, NLayoutHeader, NLayoutSider, NButton, NIcon, NTabs, NTabPane, NMessageProvider, NDivider } from 'naive-ui'
+import { SparklesOutline, AddOutline, TimeOutline, PersonOutline } from '@vicons/ionicons5'
 import { useProjectStore } from '@/stores/project'
 import { useChatStore } from '@/stores/chat'
+import { useUserStore } from '@/stores/user'
 import ChatPanel from '@/components/ChatPanel.vue'
 import CodeEditor from '@/components/CodeEditor.vue'
 import PreviewPanel from '@/components/PreviewPanel.vue'
 import HistoryPanel from '@/components/HistoryPanel.vue'
+import AuthModal from '@/components/AuthModal.vue'
 
 const projectStore = useProjectStore()
+const userStore = useUserStore()
 const showHistory = ref(false)
+const showAuthModal = ref(false)
 
 const createNewProject = async () => {
   // 清空聊天记录
@@ -87,6 +113,14 @@ const createNewProject = async () => {
 
 const handleSelectProject = (project: any) => {
   projectStore.setCurrentProject(project)
+}
+
+const handleAuthSuccess = () => {
+  showAuthModal.value = false
+}
+
+const handleLogout = () => {
+  userStore.logout()
 }
 </script>
 
@@ -117,7 +151,17 @@ const handleSelectProject = (project: any) => {
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  font-size: 14px;
+  margin-right: 8px;
 }
 
 .main-content {
