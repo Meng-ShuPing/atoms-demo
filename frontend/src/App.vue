@@ -187,6 +187,9 @@ const handleLogout = () => {
 .left-panel {
   width: 400px;
   border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .right-panel {

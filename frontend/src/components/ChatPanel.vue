@@ -22,14 +22,16 @@
     </div>
 
     <div class="input-container">
-      <n-input
-        v-model:value="inputValue"
-        type="textarea"
-        placeholder="描述你想要创建的应用..."
-        :rows="3"
-        :disabled="!isAuthenticated"
-        @keydown="handleKeydown"
-      />
+      <div class="input-wrapper">
+        <n-input
+          v-model:value="inputValue"
+          type="textarea"
+          placeholder="描述你想要创建的应用..."
+          :rows="2"
+          :disabled="!isAuthenticated"
+          @keydown="handleKeydown"
+        />
+      </div>
       <n-button
         type="primary"
         :loading="isGenerating"
@@ -146,12 +148,14 @@ const sendMessage = async () => {
   display: flex;
   flex-direction: column;
   padding: 16px;
+  box-sizing: border-box;
 }
 
 .messages-container {
   flex: 1;
   overflow-y: auto;
   margin-bottom: 16px;
+  min-height: 0;
 }
 
 .empty-state {
@@ -209,5 +213,14 @@ const sendMessage = async () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex-shrink: 0;
+}
+
+.input-wrapper {
+  flex-shrink: 0;
+}
+
+.input-wrapper :deep(.n-input) {
+  min-height: 60px !important;
 }
 </style>
