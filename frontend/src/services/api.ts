@@ -88,7 +88,7 @@ export const authApi = {
 
   // 用户登录
   login: (data: { username: string; password: string }) =>
-    api.post<ApiResponse<{ access_token: string; token_type: string }>>('/api/auth/login', data),
+    api.post<ApiResponse<{ access_token: string; token_type: string; user: User }>>('/api/auth/login', data),
 
   // 获取当前用户信息
   getCurrentUser: () =>
