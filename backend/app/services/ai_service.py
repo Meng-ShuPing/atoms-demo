@@ -121,7 +121,21 @@ class AIService:
                 if json_match:
                     content = json_match.group(1)
 
-                code_data = json.loads(content)
+                # 清理 JSON 字符串中的非法控制字符
+                # 保留合法的：\n, \r, \t，移除其他控制字符
+                content = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', content)
+
+                # 尝试解析 JSON
+                try:
+                    code_data = json.loads(content)
+                except json.JSONDecodeError as e:
+                    print(f"JSON 解析失败，尝试修复：{e}")
+                    # 可能是引号未转义，尝试用宽容模式解析
+                    # 如果包含 HTML，可能需要特殊处理
+                    import html
+                    content = html.unescape(content)
+                    code_data = json.loads(content)
+
                 return {
                     "html": code_data.get("html", ""),
                     "css": code_data.get("css", ""),
