@@ -29,6 +29,17 @@ class ProjectService:
         )
         return result.scalars().all()
 
+    async def get_projects_by_user(self, user_id: int, limit: int = 20, offset: int = 0) -> List[Project]:
+        """获取指定用户的项目列表"""
+        result = await self.db.execute(
+            select(Project)
+            .where(Project.user_id == user_id)
+            .order_by(Project.updated_at.desc())
+            .offset(offset)
+            .limit(limit)
+        )
+        return result.scalars().all()
+
     async def create_project(self, project_data: ProjectCreate) -> Project:
         """创建项目"""
         project = Project(**project_data.model_dump())

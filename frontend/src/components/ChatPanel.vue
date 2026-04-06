@@ -27,13 +27,14 @@
         type="textarea"
         placeholder="描述你想要创建的应用..."
         :rows="3"
+        :disabled="!isAuthenticated"
         @keydown="handleKeydown"
       />
       <n-button
         type="primary"
         :loading="isGenerating"
         @click="sendMessage"
-        :disabled="!inputValue.trim()"
+        :disabled="!inputValue.trim() || !isAuthenticated"
       >
         生成
         <template #icon>
@@ -50,14 +51,17 @@ import { NInput, NButton, NIcon, NSpin } from 'naive-ui'
 import { SparklesOutline, SendOutline } from '@vicons/ionicons5'
 import { useChatStore } from '@/stores/chat'
 import { useProjectStore } from '@/stores/project'
+import { useUserStore } from '@/stores/user'
 import { generateApi } from '@/services/api'
 
 const chatStore = useChatStore()
 const projectStore = useProjectStore()
+const userStore = useUserStore()
 
 const inputValue = ref('')
 const messages = computed(() => chatStore.messages)
 const isGenerating = computed(() => chatStore.isGenerating)
+const isAuthenticated = computed(() => userStore.isAuthenticated)
 
 const handleKeydown = (e: KeyboardEvent) => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
@@ -67,7 +71,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 const sendMessage = async () => {
   const prompt = inputValue.value.trim()
-  if (!prompt || isGenerating.value) return
+  if (!prompt || isGenerating.value || !isAuthenticated.value) return
 
   // 添加用户消息
   chatStore.addUserMessage(prompt)

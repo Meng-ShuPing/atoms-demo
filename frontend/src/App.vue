@@ -1,87 +1,93 @@
 <template>
-  <n-message-provider>
-    <div class="app-container">
-      <n-layout-header class="header">
-        <div class="logo">
-          <n-icon :component="SparklesOutline" size="24" />
-          <span>Atoms Demo</span>
-        </div>
-        <div class="header-actions">
-          <template v-if="userStore.isAuthenticated">
-            <span class="user-info">
-              <n-icon :component="PersonOutline" size="20" />
-              {{ userStore.user?.username }}
-            </span>
-            <n-button @click="handleLogout" size="small">
-              退出
-            </n-button>
-          </template>
-          <template v-else>
-            <n-button @click="showAuthModal = true" size="small">
-              登录 / 注册
-            </n-button>
-          </template>
-          <n-divider vertical />
-          <n-button @click="createNewProject" type="primary">
-            <template #icon>
-              <n-icon :component="AddOutline" />
-            </template>
-            新建项目
-          </n-button>
-          <n-button @click="showHistory = !showHistory">
-            <template #icon>
-              <n-icon :component="TimeOutline" />
-            </template>
-            历史记录
-          </n-button>
-        </div>
-      </n-layout-header>
-
-      <n-layout class="main-content" has-sider>
-        <n-layout-sider
-          v-if="showHistory"
-          :width="280"
-          show-trigger
-          @collapse="showHistory = false"
-          bordered
-        >
-          <HistoryPanel @select="handleSelectProject" />
-        </n-layout-sider>
-
-        <n-layout class="workspace">
-          <div class="panels">
-            <div class="left-panel">
-              <ChatPanel />
+  <n-config-provider :theme="lightTheme">
+    <n-message-provider>
+      <n-modal-provider>
+        <div class="app-container">
+          <n-layout-header class="header">
+            <div class="logo">
+              <n-icon :component="SparklesOutline" size="24" />
+              <span>Atoms Demo</span>
             </div>
-            <div class="right-panel">
-              <div class="tabs">
-                <n-tabs type="line" animated>
-                  <n-tab-pane name="code" tab="代码预览">
-                    <CodeEditor />
-                  </n-tab-pane>
-                  <n-tab-pane name="preview" tab="应用预览">
-                    <PreviewPanel />
-                  </n-tab-pane>
-                </n-tabs>
+            <div class="header-actions">
+              <template v-if="userStore.isAuthenticated">
+                <n-avatar round :size="32">
+                  <n-icon :component="PersonOutline" />
+                </n-avatar>
+                <span class="user-info">
+                  {{ userStore.user?.username }}
+                </span>
+                <n-button @click="handleLogout" size="small" quaternary>
+                  退出
+                </n-button>
+                <n-divider vertical />
+                <n-button @click="createNewProject" type="primary">
+                  <template #icon>
+                    <n-icon :component="AddOutline" />
+                  </template>
+                  新建项目
+                </n-button>
+              </template>
+              <template v-else>
+                <n-button @click="showAuthModal = true" size="small">
+                  登录 / 注册
+                </n-button>
+              </template>
+              <n-divider vertical />
+              <n-button @click="showHistory = !showHistory">
+                <template #icon>
+                  <n-icon :component="TimeOutline" />
+                </template>
+                历史记录
+              </n-button>
+            </div>
+          </n-layout-header>
+
+          <n-layout class="main-content" has-sider>
+            <n-layout-sider
+              v-if="showHistory"
+              :width="280"
+              show-trigger
+              @collapse="showHistory = false"
+              bordered
+            >
+              <HistoryPanel @select="handleSelectProject" />
+            </n-layout-sider>
+
+            <n-layout class="workspace">
+              <div class="panels">
+                <div class="left-panel">
+                  <ChatPanel />
+                </div>
+                <div class="right-panel">
+                  <div class="tabs">
+                    <n-tabs type="line" animated>
+                      <n-tab-pane name="code" tab="代码预览">
+                        <CodeEditor />
+                      </n-tab-pane>
+                      <n-tab-pane name="preview" tab="应用预览">
+                        <PreviewPanel />
+                      </n-tab-pane>
+                    </n-tabs>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </n-layout>
-      </n-layout>
+            </n-layout>
+          </n-layout>
 
-      <!-- 认证模态框 -->
-      <AuthModal
-        v-if="showAuthModal"
-        v-model="showAuthModal"
-        @success="handleAuthSuccess"
-      />
-    </div>
-  </n-message-provider>
+          <!-- 认证模态框 -->
+          <AuthModal
+            v-if="showAuthModal"
+            v-model="showAuthModal"
+          />
+        </div>
+      </n-modal-provider>
+    </n-message-provider>
+  </n-config-provider>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NLayout, NLayoutHeader, NLayoutSider, NButton, NIcon, NTabs, NTabPane, NMessageProvider, NDivider } from 'naive-ui'
+import { NLayout, NLayoutHeader, NLayoutSider, NButton, NIcon, NTabs, NTabPane, NMessageProvider, NDivider, NConfigProvider, NModalProvider, NAvatar, lightTheme } from 'naive-ui'
 import { SparklesOutline, AddOutline, TimeOutline, PersonOutline } from '@vicons/ionicons5'
 import { useProjectStore } from '@/stores/project'
 import { useChatStore } from '@/stores/chat'
@@ -115,12 +121,11 @@ const handleSelectProject = (project: any) => {
   projectStore.setCurrentProject(project)
 }
 
-const handleAuthSuccess = () => {
-  showAuthModal.value = false
-}
-
 const handleLogout = () => {
   userStore.logout()
+  // 清空项目数据
+  projectStore.projects = []
+  projectStore.currentProject = null
 }
 </script>
 
